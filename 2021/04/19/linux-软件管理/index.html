@@ -1,0 +1,169 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#0078E7"><meta name="author" content="小林"><meta name="copyright" content="小林"><meta name="generator" content="Hexo 5.4.1"><meta name="theme" content="hexo-theme-yun"><title>linux-软件管理 | 小林の空中基地</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@900&amp;display=swap" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/star-markdown-css@0.2.4/dist/yun/yun-markdown.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prism-theme-vars/base.css"><script src="//at.alicdn.com/t/font_1140697_dxory92pb0h.js" async></script><script src="https://cdn.jsdelivr.net/npm/@unocss/runtime/mini.global.js"></script><script src="https://cdn.jsdelivr.net/npm/scrollreveal/dist/scrollreveal.min.js" defer></script><script>function initScrollReveal() {
+  [".post-card",".markdown-body img"].forEach((target)=> {
+    ScrollReveal().reveal(target);
+  })
+}
+document.addEventListener("DOMContentLoaded", initScrollReveal);
+document.addEventListener("pjax:success", initScrollReveal);
+</script><link rel="icon" type="image/png" href="/favicon.ico"><link rel="mask-icon" href="/favicon.ico" color="#0078E7"><link rel="preload" href="/css/hexo-theme-yun.css" as="style"><link rel="prefetch" href="/js/sidebar.js" as="script"><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><script id="yun-config">
+    window.Yun = {}
+    window.CONFIG = {"hostname":"example.com","root":"/","title":"小林の空中基地","version":"1.8.11","mode":"auto","copycode":true,"page":{"isPost":true},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}.","hits":"${hits} results found","hits_time":"${hits} results found in ${time} ms"},"anonymous_image":"https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/avatar/none.jpg","say":{"api":"https://el-bot-api.vercel.app/api/words/young"},"fireworks":{"colors":null},"vendors":{"darken":"https://cdn.jsdelivr.net/npm/darken@1.5.0"}};
+  </script><link rel="stylesheet" href="/css/hexo-theme-yun.css"><script src="/js/hexo-theme-yun.js" type="module"></script><link rel="preconnect" href="https://www.google-analytics.com" crossorigin><script async src="https://www.googletagmanager.com/gtag/js?id=G-1LL0D86CY9"></script><script>if (CONFIG.hostname === location.hostname) {
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-1LL0D86CY9');
+}</script><script data-ad-client="ca-pub-2245427233262012" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><script>(function(){
+  var bp = document.createElement('script');
+  var curProtocol = window.location.protocol.split(':')[0];
+  if (curProtocol === 'https') {
+    bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+  }
+  else {
+    bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+  }
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(bp, s);
+})();</script><!-- Google Tag Manager --><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-M9KWR9L');</script><!-- End Google Tag Manager --><meta name="description" content="软件管理RPM基本概述什么是rpmRPM全称 RedHat Package Manager 缩写，由红帽开发用于软件包的安装升级卸载与查询 rpm包名组成部分RPM包命名以-将软件分成了若干部分bash-4.2.46-28.el7.x86_64.rpm 123bash:软件名4.2.46-28.el7：4是大版本，2是小版本，46是修订次数，28是发布次数，el7是：enterprise linu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux-软件管理">
+<meta property="og:url" content="http://example.com/2021/04/19/linux-%E8%BD%AF%E4%BB%B6%E7%AE%A1%E7%90%86/index.html">
+<meta property="og:site_name" content="小林の空中基地">
+<meta property="og:description" content="软件管理RPM基本概述什么是rpmRPM全称 RedHat Package Manager 缩写，由红帽开发用于软件包的安装升级卸载与查询 rpm包名组成部分RPM包命名以-将软件分成了若干部分bash-4.2.46-28.el7.x86_64.rpm 123bash:软件名4.2.46-28.el7：4是大版本，2是小版本，46是修订次数，28是发布次数，el7是：enterprise linu">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2021/04/19/linux-%E8%BD%AF%E4%BB%B6%E7%AE%A1%E7%90%86/img/007S8ZIlgy1ghu71lrwt0j30qy07cq50.jpg">
+<meta property="article:published_time" content="2021-04-19T08:28:50.000Z">
+<meta property="article:modified_time" content="2022-03-21T07:22:36.159Z">
+<meta property="article:author" content="小林">
+<meta property="article:tag" content="linux">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/04/19/linux-%E8%BD%AF%E4%BB%B6%E7%AE%A1%E7%90%86/img/007S8ZIlgy1ghu71lrwt0j30qy07cq50.jpg"><script>(function() {
+  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+  const setting = localStorage.getItem('darken-mode') || 'auto'
+  if (setting === 'dark' || (prefersDark && setting !== 'light'))
+    document.documentElement.classList.toggle('dark', true)
+})()</script></head><body><script defer src="https://cdn.jsdelivr.net/npm/animejs@latest"></script><script defer src="/js/ui/fireworks.js" type="module"></script><canvas class="fireworks"></canvas><div class="container"><a class="sidebar-toggle hty-icon-button" id="menu-btn"><div class="hamburger hamburger--spin" type="button"><span class="hamburger-box"><span class="hamburger-inner"></span></span></div></a><div class="sidebar-toggle sidebar-overlay"></div><aside class="sidebar"><script src="/js/sidebar.js" type="module"></script><ul class="sidebar-nav"><li class="sidebar-nav-item sidebar-nav-toc hty-icon-button sidebar-nav-active" data-target="post-toc-wrap" title="Table of Contents"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-list-ordered"></use></svg></li><li class="sidebar-nav-item sidebar-nav-overview hty-icon-button" data-target="site-overview-wrap" title="Overview"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-passport-line"></use></svg></li></ul><div class="sidebar-panel" id="site-overview-wrap"><div class="site-info fix-top"><a class="site-author-avatar" href="/about/" title="小林"><img width="96" loading="lazy" src="/images/avatar1.jpg" alt="小林"><span class="site-author-status" title="Looking for dawn.">🌑</span></a><div class="site-author-name"><a href="/about/">小林</a></div><span class="site-name">小林の空中基地</span><sub class="site-subtitle">You're always there for me.</sub><div class="site-desciption">经历风雨未必现彩虹，但彩虹总在风雨后</div></div><nav class="site-state"><a class="site-state-item hty-icon-button icon-home" href="/" title="Home"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-home-4-line"></use></svg></span></a><div class="site-state-item"><a href="/archives/" title="Archives"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-archive-line"></use></svg></span><span class="site-state-item-count">41</span></a></div><div class="site-state-item"><a href="/categories/" title="Categories"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-folder-2-line"></use></svg></span><span class="site-state-item-count">0</span></a></div><div class="site-state-item"><a href="/tags/" title="Tags"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="site-state-item-count">13</span></a></div><a class="site-state-item hty-icon-button" href="/about/#comment" title="留言板"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-clipboard-line"></use></svg></span></a></nav><hr style="margin-bottom:0.5rem"><div class="links-of-author"><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://github.com/xiaolin-666" title="GitHub" target="_blank" style="color:#6e5494"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-github-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://music.163.com/#/user/home?id=1293010382" title="网易云音乐" target="_blank" style="color:#C20C0C"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-netease-cloud-music-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://space.bilibili.com/21350202" title="哔哩哔哩" target="_blank" style="color:#FF8EB3"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-bilibili-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://twitter.com" title="Twitter" target="_blank" style="color:#1da1f2"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-twitter-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://t.me/elpsycn" title="Telegram Channel" target="_blank" style="color:#0088CC"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-telegram-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="mailto:me@xiaolin.cn" title="E-Mail" target="_blank" style="color:#8E71C1"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-mail-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://travellings.link" title="Travelling" target="_blank" style="color:var(--hty-text-color)"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-train-line"></use></svg></a></div><hr style="margin:0.5rem 1rem"><div class="links"><a class="links-item hty-icon-button" href="/links/" title="我的小伙伴们" style="color:dodgerblue"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-genderless-line"></use></svg></a><a class="links-item hty-icon-button" href="/girls/" title="喜欢的女孩子" style="color:hotpink"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-women-line"></use></svg></a></div><br><a class="links-item hty-icon-button" id="toggle-mode-btn" href="javascript:;" title="Mode" style="color: #f1cb64"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-contrast-2-line"></use></svg></a></div><div class="sidebar-panel sidebar-panel-active" id="post-toc-wrap"><div class="post-toc"><div class="post-toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%BD%AF%E4%BB%B6%E7%AE%A1%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">软件管理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#RPM%E5%9F%BA%E6%9C%AC%E6%A6%82%E8%BF%B0"><span class="toc-number">1.1.</span> <span class="toc-text">RPM基本概述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFrpm"><span class="toc-number">1.1.1.</span> <span class="toc-text">什么是rpm</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#rpm%E5%8C%85%E5%90%8D%E7%BB%84%E6%88%90%E9%83%A8%E5%88%86"><span class="toc-number">1.1.2.</span> <span class="toc-text">rpm包名组成部分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96rpm%E5%8C%85"><span class="toc-number">1.1.3.</span> <span class="toc-text">获取rpm包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B6%E5%AE%83%E5%AE%89%E8%A3%85%E8%BD%AF%E4%BB%B6%E6%96%B9%E5%BC%8F"><span class="toc-number">1.1.4.</span> <span class="toc-text">其它安装软件方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RPM%E4%BD%BF%E7%94%A8"><span class="toc-number">1.1.5.</span> <span class="toc-text">RPM使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-rpm%E5%8C%85%E5%A6%82%E4%BD%95%E5%AE%89%E8%A3%85"><span class="toc-number">1.1.5.1.</span> <span class="toc-text">1.rpm包如何安装</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E8%AF%A2%E5%B7%B2%E5%AE%89%E8%A3%85%E5%A5%BD%E7%9A%84rpm%E5%8C%85"><span class="toc-number">1.1.6.</span> <span class="toc-text">查询已安装好的rpm包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RPM%E5%8C%85%E5%8D%87%E7%BA%A7"><span class="toc-number">1.1.7.</span> <span class="toc-text">RPM包升级</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RPM%E5%8C%85%E5%8D%B8%E8%BD%BD"><span class="toc-number">1.1.8.</span> <span class="toc-text">RPM包卸载</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#YUM%E5%9F%BA%E6%9C%AC%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.2.</span> <span class="toc-text">YUM基本介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFYUM"><span class="toc-number">1.2.1.</span> <span class="toc-text">什么是YUM</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#YUM%E6%BA%90%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">1.2.2.</span> <span class="toc-text">YUM源是什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEYUM%E6%BA%90"><span class="toc-number">1.2.3.</span> <span class="toc-text">配置YUM源</span></a></li></ol></li></ol></li></ol></div></div></div></aside><main class="sidebar-translate" id="content"><div id="post"><article class="hty-card post-block" itemscope itemtype="https://schema.org/Article" style="--smc-primary:#0078E7;"><link itemprop="mainEntityOfPage" href="http://example.com/2021/04/19/linux-%E8%BD%AF%E4%BB%B6%E7%AE%A1%E7%90%86/"><span hidden itemprop="author" itemscope itemtype="https://schema.org/Person"><meta itemprop="name" content="小林"><meta itemprop="description"></span><span hidden itemprop="publisher" itemscope itemtype="https://schema.org/Organization"><meta itemprop="name" content="小林の空中基地"></span><header class="post-header"><h1 class="post-title" itemprop="name headline">linux-软件管理<a class="post-edit-link" href="https://github.com/xiaolin-666/xiaolin-666.github.io/tree/hexo/source/_posts/linux-软件管理.md" target="_blank" title="Edit this post" rel="noopener"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-edit-line"></use></svg></a></h1><div class="post-meta"><div class="post-time"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-calendar-line"></use></svg></span> <time title="Created: 2021-04-19 16:28:50" itemprop="dateCreated datePublished" datetime="2021-04-19T16:28:50+08:00">2021-04-19</time><span class="post-meta-divider">-</span><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-calendar-2-line"></use></svg></span> <time title="Modified: 2022-03-21 15:22:36" itemprop="dateModified" datetime="2022-03-21T15:22:36+08:00">2022-03-21</time></div><div class="post-classify"><span class="post-tag"><a class="tag-item" href="/tags/linux/" style="--text-color:#2577b1"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="tag-name">linux</span></a></span></div></div></header><section class="post-body" itemprop="articleBody"><div class="post-content markdown-body"><h1 id="软件管理"><a href="#软件管理" class="headerlink" title="软件管理"></a>软件管理</h1><h2 id="RPM基本概述"><a href="#RPM基本概述" class="headerlink" title="RPM基本概述"></a>RPM基本概述</h2><h3 id="什么是rpm"><a href="#什么是rpm" class="headerlink" title="什么是rpm"></a>什么是rpm</h3><p>RPM全称 RedHat Package Manager 缩写，由红帽开发用于软件包的安装升级卸载与查询</p>
+<h3 id="rpm包名组成部分"><a href="#rpm包名组成部分" class="headerlink" title="rpm包名组成部分"></a>rpm包名组成部分</h3><p>RPM包命名以-将软件分成了若干部分<code>bash-4.2.46-28.el7.x86_64.rpm</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">bash:软件名</span><br><span class="line"><span class="number">4.2</span><span class="number">.46</span>-<span class="number">28.</span>el7：<span class="number">4</span>是大版本，<span class="number">2</span>是小版本，<span class="number">46</span>是修订次数，<span class="number">28</span>是发布次数，el7是：enterprise linux <span class="number">7</span>，使用linux7系统</span><br><span class="line">x86_64：<span class="number">64</span>位架构</span><br></pre></td></tr></table></figure>
+
+<p><img src="img/007S8ZIlgy1ghu71lrwt0j30qy07cq50.jpg" alt="007S8ZIlgy1ghu71lrwt0j30qy07cq50" loading="lazy"></p>
+<h3 id="获取rpm包"><a href="#获取rpm包" class="headerlink" title="获取rpm包"></a>获取rpm包</h3><p>通过本地镜像获取rpm包，执行<code>mount /dev/cdrom /mnt </code>把光盘挂在到 /mnt文件，会在<code>/mnt/Packages</code>目录下看到很多rpm的包文件，实际生产环境中都是通过联网的方式获取rpm包</p>
+<h3 id="其它安装软件方式"><a href="#其它安装软件方式" class="headerlink" title="其它安装软件方式"></a>其它安装软件方式</h3><table>
+<thead>
+<tr>
+<th>分类</th>
+<th>安装</th>
+<th>版本</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>rpm包</td>
+<td>预先编译打包,安装简单</td>
+<td>软件版本偏低</td>
+</tr>
+<tr>
+<td>源码包</td>
+<td>手动编译打包,安装繁琐</td>
+<td>软件版本随意</td>
+</tr>
+<tr>
+<td>二进制包(绿色包)</td>
+<td>解压即可使用, 安装简单</td>
+<td>不能修改源码</td>
+</tr>
+</tbody></table>
+<h3 id="RPM使用"><a href="#RPM使用" class="headerlink" title="RPM使用"></a>RPM使用</h3><h4 id="1-rpm包如何安装"><a href="#1-rpm包如何安装" class="headerlink" title="1.rpm包如何安装"></a>1.rpm包如何安装</h4><p>以下列出了rpm命令进行安装软件的常用参数</p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-i</td>
+<td>安装rpm</td>
+</tr>
+<tr>
+<td>-v</td>
+<td>显示安装详细信息</td>
+</tr>
+<tr>
+<td>-h</td>
+<td>显示安装rpm进度</td>
+</tr>
+<tr>
+<td>–force</td>
+<td>强制重新安装</td>
+</tr>
+<tr>
+<td>–nodeps</td>
+<td>忽略依赖关系</td>
+</tr>
+</tbody></table>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#在软件包所在目录下可以不指定绝对路径，不再则指定</span></span><br><span class="line">安装rpm的软件：rpm -ivh tree-<span class="number">1.6</span><span class="number">.0</span>-<span class="number">10.</span>el7.x86_64.rpm</span><br><span class="line">强制安装：rpm -ivh --force /mnt/Packages/tree-<span class="number">1.5</span><span class="number">.3</span>-<span class="number">3.</span>el6.x86_64.rpm</span><br></pre></td></tr></table></figure>
+
+<h3 id="查询已安装好的rpm包"><a href="#查询已安装好的rpm包" class="headerlink" title="查询已安装好的rpm包"></a>查询已安装好的rpm包</h3><table>
+<thead>
+<tr>
+<th>选项</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>rpm -q</td>
+<td>查看指定软件包是否安装（重点）</td>
+</tr>
+<tr>
+<td>rpm -qa</td>
+<td>查看系统中已安装的所有RPM软件包列表</td>
+</tr>
+<tr>
+<td>rpm -qi</td>
+<td>查看指定软件的详细信息</td>
+</tr>
+<tr>
+<td>rpm -ql</td>
+<td>查询指定软件包所安装的目录、文件列表(重点)</td>
+</tr>
+<tr>
+<td>rpm -qc</td>
+<td>查询指定软件包的配置文件(只有配置文件，etc下的)</td>
+</tr>
+<tr>
+<td>rpm -qf</td>
+<td>查询文件或目录属于哪个RPM软件</td>
+</tr>
+<tr>
+<td>rpm -qip</td>
+<td>查询未安装的rpm包详细信息</td>
+</tr>
+<tr>
+<td>rpm -qlp</td>
+<td>查询未安装的软件包会产生哪些文件</td>
+</tr>
+</tbody></table>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">rpm -qa |grep tr  :列出所有安装的软件</span><br><span class="line">rpm -ql :查询指定软件包所安装的目录、文件列表rpm -ql unzip</span><br><span class="line">rpm -qlp trace-cmd-<span class="number">2.6</span><span class="number">.0</span>-<span class="number">10.</span>el7.x86_64.rpm ：查看该软件包安装后会释放哪些文件</span><br></pre></td></tr></table></figure>
+
+<h3 id="RPM包升级"><a href="#RPM包升级" class="headerlink" title="RPM包升级"></a>RPM包升级</h3><table>
+<thead>
+<tr>
+<th>选项</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>rpm -U</td>
+<td>如果老版本不存在则全新安装，如果存在有新版即升级</td>
+</tr>
+</tbody></table>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># wget  https://mirrors.aliyun.com/zabbix/zabbix/3.0/rhel/7/x86_64/zabbix-agent-3.0.9-1.el7.x86_64.rpm</span></span><br><span class="line"><span class="comment"># wget  https://mirrors.aliyun.com/zabbix/zabbix/4.2/rhel/7/x86_64/zabbix-agent-4.2.0-1.el7.x86_64.rpm</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#1.先安装低版本</span></span><br><span class="line">[root@www.l.com ~]<span class="comment"># rpm -ivh zabbix-agent-3.0.9-1.el7.x86_64.rpm</span></span><br><span class="line">        </span><br><span class="line"><span class="comment">#2.尝试安装高版本(会出现错误)</span></span><br><span class="line">[root@www.l.com ~]<span class="comment"># rpm -ivh zabbix-agent-4.2.0-1.el7.x86_64.rpm</span></span><br><span class="line">        </span><br><span class="line"><span class="comment">#3.使用升级的方式,完美解决替换</span></span><br><span class="line">[root@www.l.com ~]<span class="comment"># rpm -Uvh zabbix-agent-4.2.0-1.el7.x86_64.rpm</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="RPM包卸载"><a href="#RPM包卸载" class="headerlink" title="RPM包卸载"></a>RPM包卸载</h3><p>卸载包时需要先把依赖的包卸载掉，如果依赖的包是系统所必须的，那就不能卸载这个包，否则会造成系统崩溃。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#先查询, 然后卸载 </span></span><br><span class="line">[root@www.l.com ~]<span class="comment"># rpm -qa |grep sh</span></span><br><span class="line">[root@www.l.com ~]<span class="comment"># rpm -e zsh</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="YUM基本介绍"><a href="#YUM基本介绍" class="headerlink" title="YUM基本介绍"></a>YUM基本介绍</h2><h3 id="什么是YUM"><a href="#什么是YUM" class="headerlink" title="什么是YUM"></a>什么是YUM</h3><p>Yum是RedHat以及CentOS中的软件包管理器。能够通过互联网下载 .rpm 包并且安装，并可以自动处理依赖性关系，无须繁琐地一次次下载、安装</p>
+<h3 id="YUM源是什么"><a href="#YUM源是什么" class="headerlink" title="YUM源是什么"></a>YUM源是什么</h3><p>1要成功的使用 YUM 工具安装更新软件或系统，就需要有一个包含各种 rpm 软件包的repository（软件仓库），这个软件仓库我们习惯称为 yum 源(可以是本地源、网络源)</p>
+<h3 id="配置YUM源"><a href="#配置YUM源" class="headerlink" title="配置YUM源"></a>配置YUM源</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 默认系统是国外源，需要替换为国内的源</span></span><br><span class="line">[root@www.l.com ~]<span class="comment"># wget -O /etc/yum.repos.d/CentOS-Base.repo </span></span><br><span class="line">http://mirrors.aliyun.com/repo/Centos-7.repo</span><br><span class="line"></span><br><span class="line"><span class="comment"># 扩展源，有很多软件在基本源中没有</span></span><br><span class="line">[root@www.l.com ~]<span class="comment"># wget -O /etc/yum.repos.d/epel.repo </span></span><br><span class="line">http://mirrors.aliyun.com/repo/epel-7.repo</span><br></pre></td></tr></table></figure>
+
+</div></section><div id="reward-container"><span class="hty-icon-button button-glow" id="reward-button" title="Donate" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === &quot;none&quot;) ? &quot;block&quot; : &quot;none&quot;;"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-hand-coin-line"></use></svg></span><div id="reward-comment">我很可爱，请给我钱</div><div id="qr" style="display:none;"><div style="display:inline-block"></div><div style="display:inline-block"></div><div style="display:inline-block"></div></div></div><ul class="post-copyright"><li class="post-copyright-author"><strong>Post author: </strong>小林</li><li class="post-copyright-link"><strong>Post link: </strong><a href="http://example.com/2021/04/19/linux-%E8%BD%AF%E4%BB%B6%E7%AE%A1%E7%90%86/" title="linux-软件管理">http://example.com/2021/04/19/linux-%E8%BD%AF%E4%BB%B6%E7%AE%A1%E7%90%86/</a></li><li class="post-copyright-license"><strong>Copyright Notice: </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener" title="CC BY-NC-SA 4.0 "><svg class="icon"><use xlink:href="#icon-creative-commons-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-by-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-nc-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-sa-line"></use></svg></a> unless otherwise stated.</li></ul></article><div class="post-nav"><div class="post-nav-item"><a class="post-nav-prev" href="/2021/04/19/linux-%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90/" rel="prev" title="linux-用户和权限"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-left-s-line"></use></svg><span class="post-nav-text">linux-用户和权限</span></a></div><div class="post-nav-item"><a class="post-nav-next" href="/2021/04/19/mongodb-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/" rel="next" title="mongodb-基本操作"><span class="post-nav-text">mongodb-基本操作</span><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-right-s-line"></use></svg></a></div></div></div><div class="hty-card" id="comment"><div class="comment-tooltip text-center"><span>如果您有任何关于博客内容的相关讨论，欢迎前往 <a href="https://github.com/xiaolin-666/xiaolin-666.github.io/discussions" target="_blank">GitHub Discussions</a> 与我交流。</span><br></div></div></main><footer class="sidebar-translate" id="footer"><div class="beian"><a rel="noopener" href="https://beian.miit.gov.cn/" target="_blank">苏ICP备17038157号</a></div><div class="copyright"><span>&copy; 2016 – 2022 </span><span class="with-love" id="animate"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-cloud-line"></use></svg></span><span class="author"> 小林</span></div><div class="powered"><span>Powered by <a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> v5.4.1</span><span class="footer-separator">|</span><span>Theme - <a rel="noopener" href="https://github.com/YunYouJun/hexo-theme-yun" target="_blank"><span>Yun</span></a> v1.8.11</span></div><div class="footer-support"><span>本网站由</span><a class="footer-support-logo" href="https://www.upyun.com" target="blank" title="又拍云"><img height="30" src="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/logo/upyun-logo.png" alt="又拍云"></a><span>提供 CDN 加速</span></div></footer><a class="hty-icon-button" id="back-to-top" aria-label="back-to-top" href="#"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-up-s-line"></use></svg><svg class="progress-circle-container" viewBox="0 0 100 100"><circle class="progress-circle" id="progressCircle" cx="50" cy="50" r="48" fill="none" stroke="#0078E7" stroke-width="2" stroke-linecap="round"></circle></svg></a></div></body></html>

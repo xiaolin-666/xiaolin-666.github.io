@@ -1,0 +1,257 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#0078E7"><meta name="author" content="小林"><meta name="copyright" content="小林"><meta name="generator" content="Hexo 5.4.1"><meta name="theme" content="hexo-theme-yun"><title>linux-进程和系统服务 | 小林の空中基地</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@900&amp;display=swap" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/star-markdown-css@0.2.4/dist/yun/yun-markdown.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prism-theme-vars/base.css"><script src="//at.alicdn.com/t/font_1140697_dxory92pb0h.js" async></script><script src="https://cdn.jsdelivr.net/npm/@unocss/runtime/mini.global.js"></script><script src="https://cdn.jsdelivr.net/npm/scrollreveal/dist/scrollreveal.min.js" defer></script><script>function initScrollReveal() {
+  [".post-card",".markdown-body img"].forEach((target)=> {
+    ScrollReveal().reveal(target);
+  })
+}
+document.addEventListener("DOMContentLoaded", initScrollReveal);
+document.addEventListener("pjax:success", initScrollReveal);
+</script><link rel="icon" type="image/png" href="/favicon.ico"><link rel="mask-icon" href="/favicon.ico" color="#0078E7"><link rel="preload" href="/css/hexo-theme-yun.css" as="style"><link rel="prefetch" href="/js/sidebar.js" as="script"><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><script id="yun-config">
+    window.Yun = {}
+    window.CONFIG = {"hostname":"example.com","root":"/","title":"小林の空中基地","version":"1.8.11","mode":"auto","copycode":true,"page":{"isPost":true},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}.","hits":"${hits} results found","hits_time":"${hits} results found in ${time} ms"},"anonymous_image":"https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/avatar/none.jpg","say":{"api":"https://el-bot-api.vercel.app/api/words/young"},"fireworks":{"colors":null},"vendors":{"darken":"https://cdn.jsdelivr.net/npm/darken@1.5.0"}};
+  </script><link rel="stylesheet" href="/css/hexo-theme-yun.css"><script src="/js/hexo-theme-yun.js" type="module"></script><link rel="preconnect" href="https://www.google-analytics.com" crossorigin><script async src="https://www.googletagmanager.com/gtag/js?id=G-1LL0D86CY9"></script><script>if (CONFIG.hostname === location.hostname) {
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-1LL0D86CY9');
+}</script><script data-ad-client="ca-pub-2245427233262012" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><script>(function(){
+  var bp = document.createElement('script');
+  var curProtocol = window.location.protocol.split(':')[0];
+  if (curProtocol === 'https') {
+    bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+  }
+  else {
+    bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+  }
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(bp, s);
+})();</script><!-- Google Tag Manager --><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-M9KWR9L');</script><!-- End Google Tag Manager --><meta name="description" content="Linux进程和系统服务Linux进程管理使用ps命令查看当前的进程状态1)示例、ps -aux常用组合，查看进程 用户、PID、占用cpu百分比、占用内存百分比、状态、执行的命令等     状态 描述    USER 启动进程的用户   PID 进程运行的ID号   %CPU 进程占用CPU百分比   %MEM 进程占用内存百分比   VSZ 进程占用虚拟内存大小 (单位KB)   RSS 进程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux-进程和系统服务">
+<meta property="og:url" content="http://example.com/2021/04/19/linux-%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%B3%BB%E7%BB%9F%E6%9C%8D%E5%8A%A1/index.html">
+<meta property="og:site_name" content="小林の空中基地">
+<meta property="og:description" content="Linux进程和系统服务Linux进程管理使用ps命令查看当前的进程状态1)示例、ps -aux常用组合，查看进程 用户、PID、占用cpu百分比、占用内存百分比、状态、执行的命令等     状态 描述    USER 启动进程的用户   PID 进程运行的ID号   %CPU 进程占用CPU百分比   %MEM 进程占用内存百分比   VSZ 进程占用虚拟内存大小 (单位KB)   RSS 进程">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2021/04/19/linux-%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%B3%BB%E7%BB%9F%E6%9C%8D%E5%8A%A1/img/007S8ZIlgy1ghu779g9pgj31gq0p4am5.jpg">
+<meta property="article:published_time" content="2021-04-19T08:28:50.000Z">
+<meta property="article:modified_time" content="2022-03-21T07:25:08.830Z">
+<meta property="article:author" content="小林">
+<meta property="article:tag" content="linux">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/04/19/linux-%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%B3%BB%E7%BB%9F%E6%9C%8D%E5%8A%A1/img/007S8ZIlgy1ghu779g9pgj31gq0p4am5.jpg"><script>(function() {
+  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+  const setting = localStorage.getItem('darken-mode') || 'auto'
+  if (setting === 'dark' || (prefersDark && setting !== 'light'))
+    document.documentElement.classList.toggle('dark', true)
+})()</script></head><body><script defer src="https://cdn.jsdelivr.net/npm/animejs@latest"></script><script defer src="/js/ui/fireworks.js" type="module"></script><canvas class="fireworks"></canvas><div class="container"><a class="sidebar-toggle hty-icon-button" id="menu-btn"><div class="hamburger hamburger--spin" type="button"><span class="hamburger-box"><span class="hamburger-inner"></span></span></div></a><div class="sidebar-toggle sidebar-overlay"></div><aside class="sidebar"><script src="/js/sidebar.js" type="module"></script><ul class="sidebar-nav"><li class="sidebar-nav-item sidebar-nav-toc hty-icon-button sidebar-nav-active" data-target="post-toc-wrap" title="Table of Contents"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-list-ordered"></use></svg></li><li class="sidebar-nav-item sidebar-nav-overview hty-icon-button" data-target="site-overview-wrap" title="Overview"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-passport-line"></use></svg></li></ul><div class="sidebar-panel" id="site-overview-wrap"><div class="site-info fix-top"><a class="site-author-avatar" href="/about/" title="小林"><img width="96" loading="lazy" src="/images/avatar1.jpg" alt="小林"><span class="site-author-status" title="Looking for dawn.">🌑</span></a><div class="site-author-name"><a href="/about/">小林</a></div><span class="site-name">小林の空中基地</span><sub class="site-subtitle">You're always there for me.</sub><div class="site-desciption">经历风雨未必现彩虹，但彩虹总在风雨后</div></div><nav class="site-state"><a class="site-state-item hty-icon-button icon-home" href="/" title="Home"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-home-4-line"></use></svg></span></a><div class="site-state-item"><a href="/archives/" title="Archives"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-archive-line"></use></svg></span><span class="site-state-item-count">41</span></a></div><div class="site-state-item"><a href="/categories/" title="Categories"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-folder-2-line"></use></svg></span><span class="site-state-item-count">0</span></a></div><div class="site-state-item"><a href="/tags/" title="Tags"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="site-state-item-count">13</span></a></div><a class="site-state-item hty-icon-button" href="/about/#comment" title="留言板"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-clipboard-line"></use></svg></span></a></nav><hr style="margin-bottom:0.5rem"><div class="links-of-author"><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://github.com/xiaolin-666" title="GitHub" target="_blank" style="color:#6e5494"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-github-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://music.163.com/#/user/home?id=1293010382" title="网易云音乐" target="_blank" style="color:#C20C0C"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-netease-cloud-music-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://space.bilibili.com/21350202" title="哔哩哔哩" target="_blank" style="color:#FF8EB3"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-bilibili-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://twitter.com" title="Twitter" target="_blank" style="color:#1da1f2"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-twitter-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://t.me/elpsycn" title="Telegram Channel" target="_blank" style="color:#0088CC"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-telegram-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="mailto:me@xiaolin.cn" title="E-Mail" target="_blank" style="color:#8E71C1"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-mail-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://travellings.link" title="Travelling" target="_blank" style="color:var(--hty-text-color)"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-train-line"></use></svg></a></div><hr style="margin:0.5rem 1rem"><div class="links"><a class="links-item hty-icon-button" href="/links/" title="我的小伙伴们" style="color:dodgerblue"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-genderless-line"></use></svg></a><a class="links-item hty-icon-button" href="/girls/" title="喜欢的女孩子" style="color:hotpink"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-women-line"></use></svg></a></div><br><a class="links-item hty-icon-button" id="toggle-mode-btn" href="javascript:;" title="Mode" style="color: #f1cb64"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-contrast-2-line"></use></svg></a></div><div class="sidebar-panel sidebar-panel-active" id="post-toc-wrap"><div class="post-toc"><div class="post-toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Linux%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%B3%BB%E7%BB%9F%E6%9C%8D%E5%8A%A1"><span class="toc-number">1.</span> <span class="toc-text">Linux进程和系统服务</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86"><span class="toc-number">1.1.</span> <span class="toc-text">Linux进程管理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8ps%E5%91%BD%E4%BB%A4%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8D%E7%9A%84%E8%BF%9B%E7%A8%8B%E7%8A%B6%E6%80%81"><span class="toc-number">1.1.1.</span> <span class="toc-text">使用ps命令查看当前的进程状态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86%E5%91%BD%E4%BB%A4"><span class="toc-number">1.1.2.</span> <span class="toc-text">进程管理命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%A1%E7%90%86%E8%BF%9B%E7%A8%8B%E7%8A%B6%E6%80%81"><span class="toc-number">1.1.3.</span> <span class="toc-text">管理进程状态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%A1%E7%90%86%E5%90%8E%E5%8F%B0%E8%BF%9B%E7%A8%8B"><span class="toc-number">1.1.4.</span> <span class="toc-text">管理后台进程</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#screen%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-number">1.1.4.0.1.</span> <span class="toc-text">screen的使用</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux%E7%B3%BB%E7%BB%9F%E6%9C%8D%E5%8A%A1"><span class="toc-number">1.2.</span> <span class="toc-text">Linux系统服务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Linux%E8%BF%90%E8%A1%8C%E7%BA%A7%E5%88%AB"><span class="toc-number">1.2.1.</span> <span class="toc-text">Linux运行级别</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E4%BB%80%E4%B9%88%E6%98%AF%E8%BF%90%E8%A1%8C%E7%BA%A7%E5%88%AB%EF%BC%8C%E8%BF%90%E8%A1%8C%E7%BA%A7%E5%88%AB%E5%B0%B1%E6%98%AF%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%BD%93%E5%89%8D%E6%AD%A3%E5%9C%A8%E8%BF%90%E8%A1%8C%E7%9A%84%E5%8A%9F%E8%83%BD%E7%BA%A7%E5%88%AB"><span class="toc-number">1.2.1.1.</span> <span class="toc-text">1.什么是运行级别，运行级别就是操作系统当前正在运行的功能级别</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#systemd%E7%9A%84%E7%94%B1%E6%9D%A5"><span class="toc-number">1.2.2.</span> <span class="toc-text">systemd的由来</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%B6%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%9C%8D%E5%8A%A1"><span class="toc-number">1.2.3.</span> <span class="toc-text">制作系统服务</span></a></li></ol></li></ol></li></ol></div></div></div></aside><main class="sidebar-translate" id="content"><div id="post"><article class="hty-card post-block" itemscope itemtype="https://schema.org/Article" style="--smc-primary:#0078E7;"><link itemprop="mainEntityOfPage" href="http://example.com/2021/04/19/linux-%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%B3%BB%E7%BB%9F%E6%9C%8D%E5%8A%A1/"><span hidden itemprop="author" itemscope itemtype="https://schema.org/Person"><meta itemprop="name" content="小林"><meta itemprop="description"></span><span hidden itemprop="publisher" itemscope itemtype="https://schema.org/Organization"><meta itemprop="name" content="小林の空中基地"></span><header class="post-header"><h1 class="post-title" itemprop="name headline">linux-进程和系统服务<a class="post-edit-link" href="https://github.com/xiaolin-666/xiaolin-666.github.io/tree/hexo/source/_posts/linux-进程和系统服务.md" target="_blank" title="Edit this post" rel="noopener"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-edit-line"></use></svg></a></h1><div class="post-meta"><div class="post-time"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-calendar-line"></use></svg></span> <time title="Created: 2021-04-19 16:28:50" itemprop="dateCreated datePublished" datetime="2021-04-19T16:28:50+08:00">2021-04-19</time><span class="post-meta-divider">-</span><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-calendar-2-line"></use></svg></span> <time title="Modified: 2022-03-21 15:25:08" itemprop="dateModified" datetime="2022-03-21T15:25:08+08:00">2022-03-21</time></div><div class="post-classify"><span class="post-tag"><a class="tag-item" href="/tags/linux/" style="--text-color:#2577b1"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="tag-name">linux</span></a></span></div></div></header><section class="post-body" itemprop="articleBody"><div class="post-content markdown-body"><h1 id="Linux进程和系统服务"><a href="#Linux进程和系统服务" class="headerlink" title="Linux进程和系统服务"></a>Linux进程和系统服务</h1><h2 id="Linux进程管理"><a href="#Linux进程管理" class="headerlink" title="Linux进程管理"></a>Linux进程管理</h2><h3 id="使用ps命令查看当前的进程状态"><a href="#使用ps命令查看当前的进程状态" class="headerlink" title="使用ps命令查看当前的进程状态"></a>使用ps命令查看当前的进程状态</h3><p>1)示例、ps -aux常用组合，查看进程 用户、PID、占用cpu百分比、占用内存百分比、状态、执行的命令等</p>
+<p><img src="img/007S8ZIlgy1ghu779g9pgj31gq0p4am5.jpg" alt="007S8ZIlgy1ghu779g9pgj31gq0p4am5" loading="lazy"></p>
+<table>
+<thead>
+<tr>
+<th>状态</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>USER</td>
+<td>启动进程的用户</td>
+</tr>
+<tr>
+<td>PID</td>
+<td>进程运行的ID号</td>
+</tr>
+<tr>
+<td>%CPU</td>
+<td>进程占用CPU百分比</td>
+</tr>
+<tr>
+<td>%MEM</td>
+<td>进程占用内存百分比</td>
+</tr>
+<tr>
+<td>VSZ</td>
+<td>进程占用虚拟内存大小 (单位KB)</td>
+</tr>
+<tr>
+<td>RSS</td>
+<td>进程占用物理内存实际大小 (单位KB)</td>
+</tr>
+<tr>
+<td>TTY</td>
+<td>进程是由哪个终端运行启动的tty1、pts/0等 ?表示内核程序与终端无关(远程连接会通过tty打开一个bash：tty)</td>
+</tr>
+<tr>
+<td>STAT</td>
+<td>进程运行过程中的状态 man ps （/STATE）</td>
+</tr>
+<tr>
+<td>START</td>
+<td>进程的启动时间</td>
+</tr>
+<tr>
+<td>TIME</td>
+<td>进程占用 CPU 的总时间(为0表示还没超过秒)</td>
+</tr>
+<tr>
+<td>COMMAND</td>
+<td>程序的运行指令，[ 方括号 ] 属于内核态的进程。 没有 [ ] 的是用户态进程。systemctl status 指令</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>STAT基本状态</th>
+<th>描述</th>
+<th>STAT状态+符号</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>R</td>
+<td>进程运行</td>
+<td>s</td>
+<td>进程是控制进程， Ss进程的领导者，父进程</td>
+</tr>
+<tr>
+<td>S</td>
+<td>可中断睡眠</td>
+<td>&lt;</td>
+<td>进程运行在高优先级上，S&lt;优先级较高的进程</td>
+</tr>
+<tr>
+<td>T</td>
+<td>进程被暂停</td>
+<td>N</td>
+<td>进程运行在低优先级上，SN优先级较低的进程</td>
+</tr>
+<tr>
+<td>D</td>
+<td>不可中断睡眠</td>
+<td>+</td>
+<td>当前进程运行在前台，R+该表示进程在前台运行（正在io操作，一旦停止，数据丢失）</td>
+</tr>
+<tr>
+<td>Z</td>
+<td>僵尸进程</td>
+<td>l</td>
+<td>进程是多线程的，Sl表示进程是以线程方式运行</td>
+</tr>
+</tbody></table>
+<h3 id="进程管理命令"><a href="#进程管理命令" class="headerlink" title="进程管理命令"></a>进程管理命令</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ps -aux 用它，[系统进程]</span><br><span class="line">ps -ef</span><br><span class="line">ps -aux|grep <span class="built_in">id</span>,进程名字，</span><br><span class="line">top 实时看状态</span><br></pre></td></tr></table></figure>
+
+<p>top 常见指令</p>
+<table>
+<thead>
+<tr>
+<th>字母</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>h</td>
+<td>查看帮出</td>
+</tr>
+<tr>
+<td>1</td>
+<td>数字1，显示所有CPU核心的负载</td>
+</tr>
+<tr>
+<td>z</td>
+<td>以高亮显示数据</td>
+</tr>
+<tr>
+<td>b</td>
+<td>高亮显示处于R（进行中）状态的进程</td>
+</tr>
+<tr>
+<td>M</td>
+<td>按内存使用百分比排序输出</td>
+</tr>
+<tr>
+<td>P</td>
+<td>按CPU使用百分比排序输出</td>
+</tr>
+<tr>
+<td>q</td>
+<td>退出top</td>
+</tr>
+</tbody></table>
+<h3 id="管理进程状态"><a href="#管理进程状态" class="headerlink" title="管理进程状态"></a>管理进程状态</h3><p>kill命令对进程发送关闭信号，除了kill、还有killall，pkill</p>
+<table>
+<thead>
+<tr>
+<th>号</th>
+<th>信号含义</th>
+<th>信号翻译</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>SIGHUP</td>
+<td>通常用来重新加载配置文件,重新读取一次参数的配置文件(类似 reload)</td>
+</tr>
+<tr>
+<td>9</td>
+<td>SIGKILL</td>
+<td>强制杀死进程(有状态的服务(存磁盘的，如mysql)强制停止可能会导致下次起不来)</td>
+</tr>
+<tr>
+<td>15</td>
+<td>SIGTERM</td>
+<td>终止进程，默认kill使用该信号(平滑关闭)</td>
+</tr>
+</tbody></table>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">kill -l 列出当前系统所支持的信号</span><br><span class="line">kill -<span class="number">9</span> 进程<span class="built_in">id</span>号 强行关闭</span><br><span class="line">pkill -<span class="number">9</span> nginx  关闭nginx所有进程    killall nginx   关闭nginx所有进程</span><br></pre></td></tr></table></figure>
+
+<h3 id="管理后台进程"><a href="#管理后台进程" class="headerlink" title="管理后台进程"></a>管理后台进程</h3><h5 id="screen的使用"><a href="#screen的使用" class="headerlink" title="screen的使用"></a>screen的使用</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span>安装</span><br><span class="line">yum install screen -y</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span>开启一个screen窗口,指定名称</span><br><span class="line">screen -S wget_mysql</span><br><span class="line"></span><br><span class="line"><span class="number">3.</span>在screen窗口中执行任务即可</span><br><span class="line">wget https://downloads.mysql.com/archives/get/p/<span class="number">23</span>/file/mysql-<span class="number">5.7</span><span class="number">.30</span>-linux-glibc2<span class="number">.12</span>-x86_64.tar.gz --no-check-certificate</span><br><span class="line"></span><br><span class="line"><span class="number">4.</span>平滑的退出screen,但不会终止screen中的任务。注意: 如果使用exit 才算真的关闭screen窗口</span><br><span class="line">ctrl+a+d</span><br><span class="line"></span><br><span class="line"><span class="number">5.</span>查看当前正在运行的screen有哪些</span><br><span class="line">screen -<span class="built_in">list</span></span><br><span class="line">There <span class="keyword">is</span> a screen on:</span><br><span class="line">    <span class="number">22058.</span>wget_mysql    (Detached)</span><br><span class="line"><span class="number">1</span> Socket <span class="keyword">in</span> /var/run/screen/S-root.</span><br><span class="line"></span><br><span class="line"><span class="number">6.</span>进入正在运行的screen</span><br><span class="line">screen -r wget_mysql</span><br><span class="line">screen -r <span class="number">22058</span></span><br><span class="line"></span><br><span class="line"><span class="number">7</span> 终止（ctrl+d），退出才能停止screen</span><br><span class="line">exit</span><br></pre></td></tr></table></figure>
+
+<h2 id="Linux系统服务"><a href="#Linux系统服务" class="headerlink" title="Linux系统服务"></a>Linux系统服务</h2><h3 id="Linux运行级别"><a href="#Linux运行级别" class="headerlink" title="Linux运行级别"></a>Linux运行级别</h3><h4 id="1-什么是运行级别，运行级别就是操作系统当前正在运行的功能级别"><a href="#1-什么是运行级别，运行级别就是操作系统当前正在运行的功能级别" class="headerlink" title="1.什么是运行级别，运行级别就是操作系统当前正在运行的功能级别"></a>1.什么是运行级别，运行级别就是操作系统当前正在运行的功能级别</h4><table>
+<thead>
+<tr>
+<th>System V init运行级别</th>
+<th>systemd目标名称</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>runlevel0.target, poweroff.target</td>
+<td>关机</td>
+</tr>
+<tr>
+<td>1</td>
+<td>runlevel1.target, rescue.target</td>
+<td>单用户模式</td>
+</tr>
+<tr>
+<td>2</td>
+<td>runlevel2.target, multi-user.target</td>
+<td>暂未使用</td>
+</tr>
+<tr>
+<td>3</td>
+<td>runlevel3.target, multi-user.target</td>
+<td>多用户的文本界面（黑框）</td>
+</tr>
+<tr>
+<td>4</td>
+<td>runlevel4.target, multi-user.target</td>
+<td>没有使用</td>
+</tr>
+<tr>
+<td>5</td>
+<td>runlevel5.target, graphical.target</td>
+<td>多用户的图形界面</td>
+</tr>
+<tr>
+<td>6</td>
+<td>runlevel6.target, reboot.target</td>
+<td>重启</td>
+</tr>
+</tbody></table>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">1.查看系统默认运行级别</span><br><span class="line"><span class="built_in">ls</span> /usr/lib/systemd/system/runlevel*</span><br><span class="line">[root@student ~]<span class="comment"># runlevel(6,7通用)</span></span><br><span class="line">[root@student ~]<span class="comment"># systemctl get-default</span></span><br><span class="line"></span><br><span class="line">2.要设置默认目标，请运行</span><br><span class="line">[root@student ~]<span class="comment"># systemctl set-default graphical.target # 切换图形界面</span></span><br><span class="line">[root@student ~]<span class="comment"># systemctl set-default multi-user.target # 切换命令界面</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="systemd的由来"><a href="#systemd的由来" class="headerlink" title="systemd的由来"></a>systemd的由来</h3><p>systemd即为system daemon守护进程，systemd主要解决上文的问题</p>
+<p>Linux一直以来都是采用init进程作为祖宗进程，但是init有两个缺点：<br>1、启动时间长。Init进程是串行启动。<br>2、启动脚本复杂，初始化完成后系统会加载很多脚本，脚本都会处理各自的情况，这会让脚本多而复杂。<br>Centos5 是启动速度最慢的，串行启动过程，无论进程相互之间有无依赖关系。<br>Centos6 相对启动速度有所改进。有依赖的进程之间依次启动而其他与之没有依赖关系的则并行同步启动。<br>Centos7 所有进程无论有无依赖关系则都是并行启动（当然很多时候进程没有真正启动而是只有一个信号或者说是标记而已，在真正利用的时候才会真正启动。）</p>
+<h3 id="制作系统服务"><a href="#制作系统服务" class="headerlink" title="制作系统服务"></a>制作系统服务</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">1 centos6 中启动服务，centos7启动服务</span><br><span class="line">/etc/init.d/network restart</span><br><span class="line">service network restart  <span class="comment">#(只会干掉父进程，不会关掉子进程)</span></span><br><span class="line"><span class="comment"># centos7启动服务</span></span><br><span class="line">systemctl restart network <span class="comment"># 所有服务都放在/usr/lib/systemd/system/ </span></span><br><span class="line"></span><br><span class="line">2  制作系统服务（nginx为例）</span><br><span class="line"><span class="comment"># cd /usr/lib/systemd/system/</span></span><br><span class="line"><span class="comment"># vim mynginx.service</span></span><br><span class="line">[Unit]</span><br><span class="line">Description=my nginx</span><br><span class="line">After=network.target  <span class="comment">#在哪个服务启动后启动</span></span><br><span class="line">[Service]</span><br><span class="line">Type=forking</span><br><span class="line">ExecStart=/usr/local/nginx/sbin/nginx</span><br><span class="line">ExecStop=/usr/local/nginx/sbin/nginx -s stop</span><br><span class="line">ExecRestart=/usr/local/nginx/sbin/nginx -s restart</span><br><span class="line">ExecReload=/usr/local/nginx/sbin/nginx -s reload</span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br><span class="line"></span><br><span class="line"><span class="comment"># 以后就支持使用 systemctl start mynginx.service</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">chmod</span> 754 mynginx.servic</span><br><span class="line">systemctl start mynginx          <span class="comment"># 启动nginx</span></span><br><span class="line">systemctl <span class="built_in">enable</span> mynginx.service <span class="comment"># 开机启动</span></span><br><span class="line">systemctl status mynginx.service <span class="comment"># 查看是否成功</span></span><br><span class="line">systemctl <span class="built_in">disable</span> mynginx.service <span class="comment"># 取消开机启动</span></span><br></pre></td></tr></table></figure>
+
+</div></section><div id="reward-container"><span class="hty-icon-button button-glow" id="reward-button" title="Donate" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === &quot;none&quot;) ? &quot;block&quot; : &quot;none&quot;;"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-hand-coin-line"></use></svg></span><div id="reward-comment">我很可爱，请给我钱</div><div id="qr" style="display:none;"><div style="display:inline-block"></div><div style="display:inline-block"></div><div style="display:inline-block"></div></div></div><ul class="post-copyright"><li class="post-copyright-author"><strong>Post author: </strong>小林</li><li class="post-copyright-link"><strong>Post link: </strong><a href="http://example.com/2021/04/19/linux-%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%B3%BB%E7%BB%9F%E6%9C%8D%E5%8A%A1/" title="linux-进程和系统服务">http://example.com/2021/04/19/linux-%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%B3%BB%E7%BB%9F%E6%9C%8D%E5%8A%A1/</a></li><li class="post-copyright-license"><strong>Copyright Notice: </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener" title="CC BY-NC-SA 4.0 "><svg class="icon"><use xlink:href="#icon-creative-commons-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-by-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-nc-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-sa-line"></use></svg></a> unless otherwise stated.</li></ul></article><div class="post-nav"><div class="post-nav-item"><a class="post-nav-prev" href="/2021/04/19/mysql-%E4%B8%BB%E4%BB%8E%E6%90%AD%E5%BB%BA/" rel="prev" title="mysql-主从搭建"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-left-s-line"></use></svg><span class="post-nav-text">mysql-主从搭建</span></a></div><div class="post-nav-item"><a class="post-nav-next" href="/2021/04/19/mysql-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/" rel="next" title="mysql-基本操作"><span class="post-nav-text">mysql-基本操作</span><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-right-s-line"></use></svg></a></div></div></div><div class="hty-card" id="comment"><div class="comment-tooltip text-center"><span>如果您有任何关于博客内容的相关讨论，欢迎前往 <a href="https://github.com/xiaolin-666/xiaolin-666.github.io/discussions" target="_blank">GitHub Discussions</a> 与我交流。</span><br></div></div></main><footer class="sidebar-translate" id="footer"><div class="beian"><a rel="noopener" href="https://beian.miit.gov.cn/" target="_blank">苏ICP备17038157号</a></div><div class="copyright"><span>&copy; 2016 – 2022 </span><span class="with-love" id="animate"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-cloud-line"></use></svg></span><span class="author"> 小林</span></div><div class="powered"><span>Powered by <a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> v5.4.1</span><span class="footer-separator">|</span><span>Theme - <a rel="noopener" href="https://github.com/YunYouJun/hexo-theme-yun" target="_blank"><span>Yun</span></a> v1.8.11</span></div><div class="footer-support"><span>本网站由</span><a class="footer-support-logo" href="https://www.upyun.com" target="blank" title="又拍云"><img height="30" src="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/logo/upyun-logo.png" alt="又拍云"></a><span>提供 CDN 加速</span></div></footer><a class="hty-icon-button" id="back-to-top" aria-label="back-to-top" href="#"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-up-s-line"></use></svg><svg class="progress-circle-container" viewBox="0 0 100 100"><circle class="progress-circle" id="progressCircle" cx="50" cy="50" r="48" fill="none" stroke="#0078E7" stroke-width="2" stroke-linecap="round"></circle></svg></a></div></body></html>
